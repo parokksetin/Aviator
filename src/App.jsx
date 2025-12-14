@@ -1,9 +1,10 @@
 import React from 'react'
 import { Routes, Route, NavLink, useNavigate } from 'react-router-dom'
 import Home from './pages/Home'
-import Tools from './pages/Tools'
 import Profile from './pages/Profile'
 import Video from './pages/Video'
+import AIScriptGenerator from './pages/AIScriptGenerator';
+import ContentPlanner from './pages/ContentPlanner'
 import { generateMockVideos } from './services/api/mockApi'
 
 function Sidebar(){
@@ -17,9 +18,10 @@ function Sidebar(){
         </div>
       </div>
       <nav className="menu">
-        <NavLink to="/" end>Home</NavLink>
-        <NavLink to="/tools">Tools</NavLink>
-        <NavLink to="/profile">Profile</NavLink>
+        <NavLink to="/" end>Главная</NavLink>
+        <NavLink to="/AIScriptGenerator">Генератор сценариев</NavLink>
+        <NavLink to="/ContentPlanner">Планировщик</NavLink>
+        <NavLink to="/profile">Профиль</NavLink>
       </nav>
       <div style={{marginTop:'auto',fontSize:12,color:'var(--muted)'}}>v0.1 • Mock</div>
     </aside>
@@ -55,9 +57,10 @@ export default function App(){
 
         <Routes>
           <Route path='/' element={<Home/>} />
-          <Route path='/tools' element={<Tools/>} />
           <Route path='/profile' element={<Profile/>} />
           <Route path='/video/:id' element={<Video/>} />
+          <Route path="/AIScriptGenerator" element={<AIScriptGenerator />} />
+          <Route path="/ContentPlanner" element={<ContentPlanner />} />
         </Routes>
       </main>
     </div>
