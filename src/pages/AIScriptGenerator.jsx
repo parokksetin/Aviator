@@ -95,13 +95,10 @@ const AIScriptGeneratorPage = () => {
 
         try {
             const scriptResult = await generateScriptByNiche(niche);
-            
             setScript(scriptResult.script);
-            setStatus('✅ Сценарий успешно сгенерирован!');
 
         } catch (error) {
             console.error('Ошибка в процессе AI-генерации:', error);
-            setStatus('❌ Ошибка: Не удалось сгенерировать сценарий.');
         } finally {
             setLoading(false);
         }
@@ -139,9 +136,6 @@ const AIScriptGeneratorPage = () => {
                 </button>
             </div>
             
-            <p style={styles.statusText(loading)}>
-                Статус: {status || 'Ожидание ввода...'}
-            </p>
 
             {/* Блок вывода результата */}
             {script && (

@@ -42,7 +42,7 @@ body{
 }
 .brand{display:flex;gap:10px;align-items:center}
 .logo{
-  width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--accent), #ff964b);display:flex;align-items:center;justify-content:center;font-weight:700;color:#111
+  width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#111
 }
 .menu{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .menu a{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;color:var(--muted);text-decoration:none}
@@ -74,7 +74,7 @@ body{
 .meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
 
 /* analytics */
-.panel{background:var(--panel);border-radius:14px;padding:14px;box-shadow: 0 6px 18px rgba(0,0,0,0.6)}
+.panel{border-radius:14px;padding:14px;}
 
 /* video page */
 .video-layout{display:flex;gap:18px;align-items:flex-start}

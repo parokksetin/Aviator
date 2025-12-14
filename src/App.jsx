@@ -1,21 +1,20 @@
 import React from 'react'
-import { Routes, Route, NavLink, useNavigate } from 'react-router-dom'
+import { Routes, Route, NavLink, useLocation, useNavigate } from 'react-router-dom' // 🔥 Импортируем useLocation
 import Home from './pages/Home'
 import Profile from './pages/Profile'
 import Video from './pages/Video'
 import AIScriptGenerator from './pages/AIScriptGenerator';
 import { generateMockVideos } from './services/api/mockApi'
+import AviatorLogo from './assets/logo.svg';
 
-// --- SVG-КОМПОНЕНТЫ ДЛЯ ИКОНОК ---
-// Эти иконки будут менять цвет, наследуя 'currentColor' от родительского NavLink.
-
+// --- SVG-КОМПОНЕНТЫ ДЛЯ ИКОНОК (без изменений) ---
+// ... (Оставляем SVG-компоненты как есть)
 const Icon = ({ children }) => (
     <div style={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {children}
     </div>
 );
 
-// Иконка Главной 
 const HomeIcon = () => (
     <Icon>
         <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -24,7 +23,6 @@ const HomeIcon = () => (
     </Icon>
 );
 
-// Иконка Генератора 
 const ScriptIcon = () => (
     <Icon>
         <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -33,7 +31,6 @@ const ScriptIcon = () => (
     </Icon>
 );
 
-// Иконка Профиля 
 const ProfileIcon = () => (
     <Icon>
         <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -41,21 +38,24 @@ const ProfileIcon = () => (
         </svg>
     </Icon>
 );
+
 // ------------------------------------
 
 
 function Sidebar(){
+  // ... (без изменений)
   return (
     <aside className="sidebar">
       <div className="brand">
-        <div className="logo">A</div>
+        <div className="logo">
+            <img src={AviatorLogo} alt="Aviator Logo" style={{width: '100%', height: '100%', objectFit: 'contain'}} />
+        </div>
         <div>
           <div style={{fontWeight:700}}>Aviator</div>
           <div style={{fontSize:12,color:'var(--muted)'}}>Reels Analytics</div>
         </div>
       </div>
       <nav className="menu">
-            {/* NavLink теперь включает иконку */}
         <NavLink to="/" end>
             <HomeIcon />
             <span>Главная</span>
@@ -81,26 +81,39 @@ export default function App(){
   // Pre-generate some mock data and attach to window for dev convenience
   if(!window.__AVIATOR_MOCK__) window.__AVIATOR_MOCK__ = generateMockVideos(24)
 
+  // 🔥 1. Получаем текущий путь
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
   return (
     <div className="app">
       <Sidebar />
-      <main className="content">
-        <div className="header panel">
+      <main className="content" >
+        <div className="header panel" style={{
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center',     
+            width: '100%',
+            padding: 15 
+        }}>
           <div style={{display:'flex',alignItems:'center',gap:12}}>
             <div style={{fontSize:20,fontWeight:700}}>Aviator</div>
-            <div className="search">
-              <input placeholder="Введите нишу: фитнес, рецепты, путешествия..." id="globalSearch" />
-              <button className="btn" onClick={()=>{
-                const q = document.getElementById('globalSearch').value
-                const nav = document.querySelector('[data-nav]')
-                // naive: go to home with query param
-                window.location.href = '/?q='+encodeURIComponent(q)
-              }}>Найти</button>
-            </div>
+            
+            {/* 🔥 2. УСЛОВНЫЙ РЕНДЕРИНГ ПОИСКА */}
+            {isHomePage && (
+                <div className="search">
+                  <input placeholder="Введите нишу: фитнес, рецепты, путешествия..." id="globalSearch" />
+                  <button className="btn" onClick={()=>{
+                    const q = document.getElementById('globalSearch').value
+                    const nav = document.querySelector('[data-nav]')
+                    window.location.href = '/?q='+encodeURIComponent(q)
+                  }}>Найти</button>
+                </div>
+            )}
+            
           </div>
           <div style={{display:'flex',gap:12,alignItems:'center'}}>
-            
-            <div style={{width:40,height:40,borderRadius:10,background:'linear-gradient(135deg,var(--accent), #ff964b)'}}></div>
+           
           </div>
         </div>
 

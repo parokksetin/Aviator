@@ -12,25 +12,22 @@ const sampleTitles = [
   'Viral dance challenge explained'
 ]
 
-// Добавлены массивы для моковых ссылок на видео и обложки,
-// которые будут использоваться в генераторе.
-// Предполагается, что файлы названы video-1.mp4, video-2.mp4 и cover-1.jpg, cover-2.jpg и т.д.
 const videoUrls = [
-  '/src/assets/video-1.mp4',
-  '/src/assets/video-2.mp4',
-  '/src/assets/video-3.mp4',
-  '/src/assets/video-4.mp4',
-  '/src/assets/video-5.mp4',
-  '/src/assets/video-6.mp4',
+  '/assets/video/video-1.mp4',
+  '/assets/video/video-2.mp4',
+  '/assets/video/video-3.mp4',
+  '/assets/video/video-4.mp4',
+  '/assets/video/video-5.mp4',
+  '/assets/video/video-6.mp4',
 ]
 
 const coverImages = [
-  '/src/assets/cover-1.jpg',
-  '/src/assets/cover-2.jpg',
-  '/src/assets/cover-3.jpg',
-  '/src/assets/cover-4.jpg',
-  '/src/assets/cover-5.jpg',
-  '/src/assets/cover-6.jpg',
+  '/assets/cover/cover-1.jpg',
+  '/assets/cover/cover-2.jpg',
+  '/assets/cover/cover-3.jpg',
+  '/assets/cover/cover-4.jpg',
+  '/assets/cover/cover-5.jpg',
+  '/assets/cover/cover-6.jpg',
 ]
 
 
