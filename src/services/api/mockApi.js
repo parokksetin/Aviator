@@ -12,6 +12,28 @@ const sampleTitles = [
   'Viral dance challenge explained'
 ]
 
+// Добавлены массивы для моковых ссылок на видео и обложки,
+// которые будут использоваться в генераторе.
+// Предполагается, что файлы названы video-1.mp4, video-2.mp4 и cover-1.jpg, cover-2.jpg и т.д.
+const videoUrls = [
+  '/src/assets/video-1.mp4',
+  '/src/assets/video-2.mp4',
+  '/src/assets/video-3.mp4',
+  '/src/assets/video-4.mp4',
+  '/src/assets/video-5.mp4',
+  '/src/assets/video-6.mp4',
+]
+
+const coverImages = [
+  '/src/assets/cover-1.jpg',
+  '/src/assets/cover-2.jpg',
+  '/src/assets/cover-3.jpg',
+  '/src/assets/cover-4.jpg',
+  '/src/assets/cover-5.jpg',
+  '/src/assets/cover-6.jpg',
+]
+
+
 export function generateMockVideos(count=12){
   const arr = []
   for(let i=0;i<count;i++){
@@ -22,15 +44,26 @@ export function generateMockVideos(count=12){
     const comments = Math.floor(likes * (0.05+Math.random()*0.4))
     const saves = Math.floor(likes * (0.02+Math.random()*0.2))
     const created = Date.now() - randomInt(1,40)*24*3600*1000
+    
+    // Индекс для циклирования через моковые медиа-файлы
+    const mediaIndex = i % videoUrls.length 
+    
     arr.push({
       id, title, views, likes, comments, saves, created,
-      thumbnail: `/src/assets/thumb-${(i%6)+1}.jpg`,
+      
+      // Использование нового поля coverImage вместо thumbnail,
+      // или просто добавление новых полей.
+      thumbnail: `/src/assets/thumb-${(i%6)+1}.jpg`, // Оставлено старое поле
+      coverImage: coverImages[mediaIndex],            // НОВОЕ ПОЛЕ: Обложка
+      videoUrl: videoUrls[mediaIndex],                // НОВОЕ ПОЛЕ: Ссылка на видео
+      
       niche: ['fitness','recipes','travel','pets','food','dance'][i%6]
     })
   }
   return arr
 }
 
+// Оставшиеся функции без изменений, так как они используют generateMockVideos
 export function fetchVideosByNiche(niche, limit=12){
   const all = window.__AVIATOR_MOCK__ || generateMockVideos(20)
   return new Promise((res)=>{

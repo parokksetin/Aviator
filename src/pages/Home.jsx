@@ -19,11 +19,8 @@ export default function Главная(){
   return (
     <div>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-        <h2>Главная — Поиск по нише</h2>
-        <div style={{display:'flex',gap:8}}>
-          <input placeholder="Ниша (fitness, recipes, travel)..." value={niche} onChange={e=>setNiche(e.target.value)} style={{padding:8,borderRadius:8,background:'transparent',border:'1px solid rgba(255,255,255,0.04)'}}/>
-          <button className="btn" onClick={()=>{ const ev = new Event('niche-change'); window.dispatchEvent(ev); }}>Поиск</button>
-        </div>
+        <h2>Главная</h2>
+        
       </div>
 
       <div className="panel" style={{marginTop:12}}>

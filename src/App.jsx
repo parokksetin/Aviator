@@ -99,7 +99,7 @@ export default function App(){
             </div>
           </div>
           <div style={{display:'flex',gap:12,alignItems:'center'}}>
-            <button className="copy">Light</button>
+            
             <div style={{width:40,height:40,borderRadius:10,background:'linear-gradient(135deg,var(--accent), #ff964b)'}}></div>
           </div>
         </div>
