@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import { useParams } from 'react-router-dom'
 import { fetchVideoById } from '../services/api/mockApi'
 import { transcribeVideo, generateScript } from '../services/ai/mockAi'
+import './Video.css'
 
 export default function Video(){
   const { id } = useParams()
@@ -70,18 +71,18 @@ export default function Video(){
                     <div className="side-stats" style={{flexGrow: 1}}>
                         <h4 style={{marginBottom: 4}}>Основные метрики</h4>
                         <div style={{display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10}}>
-                            <div className="kv"><div>Views</div><div>{video.views.toLocaleString()}</div></div>
-                            <div className="kv"><div>Likes</div><div>{video.likes.toLocaleString()}</div></div>
-                            <div className="kv"><div>Comments</div><div>{video.comments.toLocaleString()}</div></div>
-                            <div className="kv"><div>Saves</div><div>{video.saves.toLocaleString()}</div></div>
+                            <div className="kv"><div>Просмотры</div><div>{video.views.toLocaleString()}</div></div>
+                            <div className="kv"><div>Лайки</div><div>{video.likes.toLocaleString()}</div></div>
+                            <div className="kv"><div>Комментарии</div><div>{video.comments.toLocaleString()}</div></div>
+                            <div className="kv"><div>Репосты</div><div>{video.saves.toLocaleString()}</div></div>
                         </div>
                     </div>
                 </div>
 
                 {/* Кнопки Transcribe/Generate (слева в правой колонке) */}
                     <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, height:'50px'}}>
-                        <button className="btn" style={{fontSize: '20px'}} onClick={handleTranscribe}>{loadingT ? 'Transcribing...' : 'Transcribe'}</button>
-                        <button className="btn" style={{fontSize: '20px'}} onClick={handleGenerate}>{loadingS ? 'Generating...' : 'Сгенерировать сценарий'}</button>
+                        <button className="btn" style={{fontSize: '20px'}} onClick={handleTranscribe}>{loadingT ? 'Транскрибируем...' : 'Транскрипция'}</button>
+                        <button className="btn" style={{fontSize: '20px'}} onClick={handleGenerate}>{loadingS ? 'Генерируем...' : 'Сгенерировать сценарий'}</button>
                     </div>
 
 
@@ -90,14 +91,14 @@ export default function Video(){
                     
                     {/* ТРАНСКРИПЦИЯ */}
                     <div>
-                        <h4>Transcription</h4>
-                        <div style={{whiteSpace:'pre-wrap',background:'rgba(255,255,255,0.02)',padding:12,borderRadius:10, minHeight: 100}}>{transcription || 'No transcription yet. Click Transcribe.'}</div>
+                        <h4>Транскрипция</h4>
+                        <div style={{whiteSpace:'pre-wrap',background:'rgba(255,255,255,0.02)',padding:12,borderRadius:10, minHeight: 100}}>{transcription || 'Пока нет транскрипции. Нажмите "Транскрипция".'}</div>
                     </div>
 
                     {/* СЦЕНАРИЙ */}
                     <div>
-                        <h4 style={{marginTop:12}}>Generated Script</h4>
-                        <div style={{whiteSpace:'pre-wrap',background:'rgba(255,255,255,0.02)',padding:12,borderRadius:10,minHeight:200}}>{script || 'No script yet. Click "Сгенерировать сценарий".'}</div>
+                        <h4 style={{marginTop:12}}>Новый сценарий</h4>
+                        <div style={{whiteSpace:'pre-wrap',background:'rgba(255,255,255,0.02)',padding:12,borderRadius:10,minHeight:200}}>{script || 'Пока нет сценария. Нажмите "Сгенерировать сценарий".'}</div>
                         <div style={{display:'flex',gap:8,marginTop:8}}>
                             <button className="copy" onClick={()=>navigator.clipboard.writeText(script || '')}>Скопировать сценарий</button>
                         </div>
@@ -107,11 +108,11 @@ export default function Video(){
                 {/* 3. INSIGHTS И ХЭШТЕГИ (в самом низу правой колонки) */}
                 <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginTop: 10}}>
                     <div>
-                        <h4>Quick Insights</h4>
-                        <div className="kv">Engagement: <strong>{((video.likes+video.comments+video.saves)/video.views*100).toFixed(2)}%</strong></div>
+                        <h4>Краткий обзор</h4>
+                        <div className="kv">Удержание <strong>{((video.likes+video.comments+video.saves)/video.views*100).toFixed(2)}%</strong></div>
                     </div>
                     <div>
-                        <h4>Suggested Hashtags</h4>
+                        <h4>Хэштеги</h4>
                         <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
                             <div className="copy">#viral</div>
                             <div className="copy">#{video.niche}</div>

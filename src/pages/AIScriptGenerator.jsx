@@ -12,8 +12,7 @@ const TEXT_LIGHT = '#F0F0F0';   // Светлый текст
 const styles = {
     pageContainer: {
         // Имитируем фон рабочей области
-        padding: '30px',
-        backgroundColor: BG_DARKEST, 
+        padding: '30px', 
         color: TEXT_LIGHT, 
         minHeight: 'calc(100vh - 60px)', // Высота, чтобы заполнить область
     },
