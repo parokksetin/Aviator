@@ -4,7 +4,7 @@
 export function randomInt(min, max){ return Math.floor(Math.random()*(max-min+1))+min }
 
 const sampleTitles = [
-  '5-minute home workout to burn fat',
+  '5-минут тренировки и жир пропадёт',
   'Как приготовить идеальный смузи',
   'Top 10 travel hacks you need',
   'Cute cat does a funny trick',

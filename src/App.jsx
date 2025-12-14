@@ -1,8 +1,6 @@
 import React from 'react'
 import { Routes, Route, NavLink, useNavigate } from 'react-router-dom'
 import Home from './pages/Home'
-import Trends from './pages/Trends'
-import Analytics from './pages/Analytics'
 import Tools from './pages/Tools'
 import Profile from './pages/Profile'
 import Video from './pages/Video'
@@ -20,8 +18,6 @@ function Sidebar(){
       </div>
       <nav className="menu">
         <NavLink to="/" end>Home</NavLink>
-        <NavLink to="/trends">Trends</NavLink>
-        <NavLink to="/analytics">Analytics</NavLink>
         <NavLink to="/tools">Tools</NavLink>
         <NavLink to="/profile">Profile</NavLink>
       </nav>
@@ -59,8 +55,6 @@ export default function App(){
 
         <Routes>
           <Route path='/' element={<Home/>} />
-          <Route path='/trends' element={<Trends/>} />
-          <Route path='/analytics' element={<Analytics/>} />
           <Route path='/tools' element={<Tools/>} />
           <Route path='/profile' element={<Profile/>} />
           <Route path='/video/:id' element={<Video/>} />

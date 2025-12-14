@@ -1,0 +1,7 @@
+
+@font-face {
+  font-family: 'centurygothic'; 
+  src: local('centurygothic'), 
+       url('../fonts/centurygothic.ttf') format('truetype'); 
+  font-style: normal;
+}

@@ -2,7 +2,7 @@ import React from 'react'
 
 const tools = [
   {id:'ai-script', title:'AI Script Generator', desc:'Generate viral scripts from transcription'},
-  {id:'ai-analyze', title:'AI Video Analyzer', desc:'Analyze a video and extract insights'},
+  {id:'ai-analyze', title:'', desc:'Analyze a video and extract insights'},
   {id:'hashtag', title:'Hashtag Finder', desc:'Suggest hashtags for your niche'},
   {id:'planner', title:'Content Planner', desc:'Plan a week of content'}
 ]

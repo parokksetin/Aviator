@@ -1,9 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import './VideoCard.css'
+
 
 export default function VideoCard({video}){
   return (
-    <Link to={'/video/' + video.id} style={{textDecoration:'none'}}>
+    <Link id='link' to={'/video/' + video.id} style={{textDecoration:'none', color:'white', fontFamily: 'centurygothic'}}>
       <div className="card">
         <div className="thumb" style={{backgroundImage:`url(${video.thumbnail})`, backgroundSize:'cover', backgroundPosition:'center'}}>
           <div style={{display:'flex',gap:8,alignItems:'center'}}>
