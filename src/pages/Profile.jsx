@@ -1,4 +1,5 @@
 import React from 'react'
+import './Profile.css'
 
 // Компонент-заглушка для стилизованного элемента/кнопки
 const ProfileAction = ({ title, value, icon, onClick }) => (
@@ -90,7 +91,7 @@ export default function Профиль(){
         {/* ========================================================= */}
         {/* ГЛАВНЫЙ КОНТЕЙНЕР ДЛЯ РАЗДЕЛОВ ПРОФИЛЯ */}
         {/* ========================================================= */}
-        <div style={{marginTop: 20, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20}}>
+        <div id = 'pipi'style={{marginTop: 20, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, fontFamily: 'centurygothic'}}>
 
             {/* КОЛОНКА 1 (ЛЕВАЯ): СТАТИСТИКА, ФОРМАТ И ТАРИФ */}
             <div>

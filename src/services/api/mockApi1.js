@@ -6,10 +6,10 @@ export function randomInt(min, max){ return Math.floor(Math.random()*(max-min+1)
 const sampleTitles = [
   '5-минут тренировки и жир пропадёт',
   'Как приготовить идеальный смузи',
-  'Top 10 travel hacks you need',
-  'Cute cat does a funny trick',
-  'Quick recipe: 3-ingredient dessert',
-  'Viral dance challenge explained'
+  'Топ-10 полезных лайфхаков для путешествий',
+  'Милый кот вытворяет забавный трюк',
+  'Быстрый рецепт: десерт из 3 ингредиентов',
+  'Объяснение вирусного танцевального челленджа'
 ]
 
 const videoUrls = [
