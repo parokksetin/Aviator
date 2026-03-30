@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import { useParams } from 'react-router-dom'
-import { fetchVideoById } from '../services/api/mockApi'
+import { fetchVideoById } from "../services/api/api"
 import { transcribeVideo, generateScript } from '../services/ai/mockAi'
 
 export default function Video(){
