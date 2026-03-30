@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Добавили импорт
+import { Link } from 'react-router-dom';
 
 export default function Home({ videos, isLoading }) {
   const [activeTab, setActiveTab] = useState('topPopular');
@@ -27,8 +27,16 @@ export default function Home({ videos, isLoading }) {
       <div className="grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px' }}>
         {currentVideos.length > 0 ? (
           currentVideos.map(video => (
-            // ОБЕРНУЛИ КАРТОЧКУ В LINK
-            <Link to={`/video/${video.shortcode}`} key={video.id} style={{ textDecoration: 'none', color: 'inherit' }}>
+            // САМОЕ ВАЖНОЕ: onClick сохраняет видео в кэш браузера перед переходом!
+            <Link 
+              to={`/video/${video.shortcode || video.id}`} 
+              onClick={() => {
+                console.log("Сохраняем видео в кэш:", video);
+                localStorage.setItem('cachedVideo', JSON.stringify(video));
+              }}
+              key={video.id} 
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
               <div className="video-card" style={{ background: '#1a1a1a', borderRadius: '12px', overflow: 'hidden', border: '1px solid #333', transition: 'transform 0.2s' }}>
                 <div style={{ position: 'relative', width: '100%', paddingTop: '125%', background: '#222' }}>
                   <img 

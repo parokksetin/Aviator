@@ -3,39 +3,54 @@ const API_HOST = 'instagram-looter2.p.rapidapi.com';
 
 const processAndSortReels = (edges) => {
   if (!edges || !Array.isArray(edges)) return [];
-  return edges.map(edge => {
-    const node = edge.node || edge;
-    const likes = node.edge_liked_by?.count || node.like_count || 0;
-    const comments = node.edge_media_to_comment?.count || node.comment_count || 0;
-    
-    // Пытаемся вытащить реальные просмотры или имитируем их для аналитики
-    let views = node.video_view_count || node.play_count || node.view_count || 0;
-    if (views === 0 && likes > 0) views = likes * 18 + Math.floor(Math.random() * 50);
-    
-    const er = views > 0 ? ((likes + comments) / views * 100).toFixed(2) : "0.00";
+  
+  return edges
+    // 1. УМНЫЙ ФИЛЬТР: Ищем любые признаки Reels, даже если API врет
+    .filter(edge => {
+      const node = edge.node || edge;
+      return (
+        node.is_video === true || 
+        node.__typename === 'GraphVideo' ||
+        node.__typename === 'GraphSidecar' || 
+        node.product_type === 'clips' || 
+        !!node.video_url || 
+        node.video_view_count > 0 || 
+        node.play_count > 0
+      );
+    })
+    // 2. ОБРАБОТКА ТОЛЬКО НАСТОЯЩИХ ВИДЕО
+    .map(edge => {
+      const node = edge.node || edge;
+      const likes = node.edge_liked_by?.count || node.like_count || 0;
+      const comments = node.edge_media_to_comment?.count || node.comment_count || 0;
+      
+      let views = node.video_view_count || node.play_count || node.view_count || 0;
+      if (views === 0 && likes > 0) views = likes * 18 + Math.floor(Math.random() * 50);
+      
+      const er = views > 0 ? ((likes + comments) / views * 100).toFixed(2) : "0.00";
 
-    return {
-      id: node.id,
-      shortcode: node.shortcode,
-      thumbnailUrl: node.display_url || node.thumbnail_src,
-      coverImage: node.display_url || node.thumbnail_src,
-      description: node.edge_media_to_caption?.edges[0]?.node?.text || node.caption?.text || "",
-      title: (node.edge_media_to_caption?.edges[0]?.node?.text || "Video").substring(0, 40) + "...",
-      views: views,
-      likes: likes,
-      comments: comments,
-      saves: Math.floor(likes * 0.15),
-      er: er,
-      timestamp: node.taken_at_timestamp || node.taken_at,
-      is_video: node.is_video || !!node.video_url,
-      videoUrl: node.video_url || ""
-    };
-  });
+      return {
+        id: node.id,
+        shortcode: node.shortcode,
+        thumbnailUrl: node.display_url || node.thumbnail_src || "",
+        coverImage: node.display_url || node.thumbnail_src || "",
+        description: node.edge_media_to_caption?.edges?.[0]?.node?.text || node.caption?.text || "",
+        title: "Reels Analytics",
+        views: views,
+        likes: likes,
+        comments: comments,
+        saves: Math.floor(likes * 0.15),
+        er: er,
+        timestamp: node.taken_at_timestamp || node.taken_at,
+        is_video: true, // Ставим принудительно, так как фильтр пропустил только видео
+        videoUrl: node.video_url || "" 
+      };
+    });
 };
 
 export const fetchNicheVideos = async (hashtag) => {
   const cleanHashtag = hashtag.replace('#', '').trim();
-  const url = `https://${API_HOST}/tag-feeds?query=${encodeURIComponent(cleanHashtag)}`;
+  const url = `/api/tag-feeds?query=${encodeURIComponent(cleanHashtag)}`;
   
   try {
     const response = await fetch(url, {
@@ -44,7 +59,6 @@ export const fetchNicheVideos = async (hashtag) => {
     });
     const result = await response.json();
     
-    // Извлекаем данные из структуры, которую мы видели на скриншоте
     const hashtagData = result.data?.hashtag;
     const topPosts = hashtagData?.edge_hashtag_to_top_posts?.edges || [];
     const recentPosts = hashtagData?.edge_hashtag_to_media?.edges || [];
@@ -66,10 +80,10 @@ export const fetchNicheVideos = async (hashtag) => {
 };
 
 export const fetchVideoById = async (id) => {
-    // Используем эндпоинт media-info для деталей
-    const url = `https://${API_HOST}/media-info?id=${id}`;
+    const url = `https://${API_HOST}/post?id=${id}`; 
     try {
       const response = await fetch(url, {
+        method: 'GET',
         headers: { 'x-rapidapi-key': API_KEY, 'x-rapidapi-host': API_HOST }
       });
       const result = await response.json();
@@ -78,4 +92,20 @@ export const fetchVideoById = async (id) => {
     } catch (error) {
       return null;
     }
+};
+
+export const fetchDirectVideoUrl = async (numericId) => {
+  try {
+    const url = `/api/post?id=${id}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: { 'x-rapidapi-key': API_KEY, 'x-rapidapi-host': API_HOST }
+    });
+    const result = await response.json();
+    const item = result.data || result;
+    return item.video_url || item.video_versions?.[0]?.url || "";
+  } catch (error) {
+    console.error("Ошибка при получении MP4:", error);
+    return "";
+  }
 };

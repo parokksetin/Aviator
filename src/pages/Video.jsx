@@ -1,32 +1,58 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchVideoById } from "../services/api/api";
 import { transcribeVideo, generateScript } from '../services/ai/mockAi';
+import { fetchDirectVideoUrl } from "../services/api/api"; 
 import './Video.css';
 
-// ОБЯЗАТЕЛЬНО: export default в начале функции
 export default function Video() {
-  const { id } = useParams();
+  const { id } = useParams(); 
   const [video, setVideo] = useState(null);
+  const [realVideoUrl, setRealVideoUrl] = useState('');
+  const [isSearchingVideo, setIsSearchingVideo] = useState(true); // Флаг поиска
+  
   const [transcription, setTranscription] = useState('');
   const [script, setScript] = useState('');
   const [loadingT, setLoadingT] = useState(false);
   const [loadingS, setLoadingS] = useState(false);
 
   useEffect(() => {
-    fetchVideoById(id).then(data => {
-      if (data) setVideo(data);
-    });
+    const savedData = localStorage.getItem('cachedVideo');
+    
+    if (savedData) {
+      const parsedVideo = JSON.parse(savedData);
+      
+      if (parsedVideo.shortcode === id || parsedVideo.id === id) {
+        setVideo(parsedVideo);
+        setIsSearchingVideo(true); // Начинаем поиск mp4
+        
+        // МЯТЕЖНЫЙ ПУТЬ: Игнорируем is_video = false. 
+        // ВСЕГДА пытаемся вытащить прямую ссылку на .mp4 через /post
+        fetchDirectVideoUrl(parsedVideo.id).then(mp4Url => {
+          if (mp4Url) {
+            console.log("Видео найдено! Ссылка:", mp4Url);
+            setRealVideoUrl(mp4Url);
+          } else {
+            console.log("Это действительно просто фото, видео нет.");
+          }
+          setIsSearchingVideo(false); // Заканчиваем поиск
+        });
+        return; 
+      }
+    }
+    console.error("Данные видео не найдены в кэше.");
   }, [id]);
 
   if (!video) return <div className="panel" style={{ padding: 50, color: '#fff' }}>Загружаем аналитику... 🚀</div>;
 
-  // Прокси для картинок, чтобы не было ошибки 403/NotSameOrigin
   const proxyUrl = (url) => url ? `https://images.weserv.nl/?url=${encodeURIComponent(url)}` : '';
 
   return (
-    <div style={{ color: '#fff', padding: '20px' }}>
-      <h2 style={{ marginBottom: 20 }}>{video.title || 'Анализ ролика'}</h2>
+    <div className="video-page-container" style={{ color: '#fff', padding: '20px' }}>
+      <h2 style={{ marginBottom: 20 }}>
+        {video.title && video.title !== "Video" && video.title !== "Reels Analytics" 
+          ? video.title 
+          : (video.description ? video.description.substring(0, 50) + '...' : 'Анализ поста')}
+      </h2>
       
       <div className="panel" style={{ 
         display: 'grid', 
@@ -37,13 +63,34 @@ export default function Video() {
         borderRadius: '15px'
       }}>
         
-        <div className="video-player">
-          {video.is_video ? (
-            <video key={video.id} controls autoPlay loop poster={proxyUrl(video.coverImage)} style={{ width: '100%', borderRadius: 10 }}>
-              <source src={video.videoUrl} type="video/mp4" />
+        <div className="video-player-container">
+          {realVideoUrl ? (
+            // Если мы нашли реальную ссылку на .mp4 - показываем видеоплеер
+            <video 
+              key={realVideoUrl} 
+              controls 
+              autoPlay 
+              loop 
+              playsInline
+              poster={proxyUrl(video.coverImage)} 
+              style={{ width: '100%', borderRadius: 10, backgroundColor: '#000' }}
+            >
+              <source src={realVideoUrl} type="video/mp4" />
             </video>
           ) : (
-            <img src={proxyUrl(video.coverImage)} alt="cover" style={{ width: '100%', borderRadius: 10 }} />
+            // Пока ищем видео ИЛИ если его реально нет - показываем картинку
+            <div style={{ position: 'relative' }}>
+              <img 
+                src={proxyUrl(video.coverImage)} 
+                alt="cover" 
+                style={{ width: '100%', borderRadius: 10, filter: isSearchingVideo ? 'brightness(0.6)' : 'none' }} 
+              />
+              {isSearchingVideo && (
+                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontWeight: 'bold', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
+                  Проверяем наличие видео... ⏳
+                </div>
+              )}
+            </div>
           )}
         </div>
 
@@ -51,10 +98,10 @@ export default function Video() {
           <div className="side-stats">
             <h4>Основные метрики</h4>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginTop: 10 }}>
-              <div className="kv"><div>Просмотры</div><div>{video.views?.toLocaleString()}</div></div>
-              <div className="kv"><div>Лайки</div><div>{video.likes?.toLocaleString()}</div></div>
-              <div className="kv"><div>Комменты</div><div>{video.comments?.toLocaleString()}</div></div>
-              <div className="kv"><div>Сохранения</div><div>{video.saves?.toLocaleString()}</div></div>
+              <div className="kv"><div>Просмотры</div><div className="value">{Number(video.views).toLocaleString()}</div></div>
+              <div className="kv"><div>Лайки</div><div className="value">{Number(video.likes).toLocaleString()}</div></div>
+              <div className="kv"><div>Комменты</div><div className="value">{Number(video.comments).toLocaleString()}</div></div>
+              <div className="kv"><div>ER</div><div className="value" style={{color: '#00e676'}}>{video.er}%</div></div>
             </div>
           </div>
 
@@ -70,15 +117,15 @@ export default function Video() {
             }}>{loadingS ? 'Генерируем...' : 'Сгенерировать сценарий'}</button>
           </div>
 
-          <div style={{ marginTop: 10 }}>
-            <h5 style={{ color: '#888' }}>Транскрипция</h5>
-            <div style={{ background: 'rgba(0,0,0,0.3)', padding: 12, borderRadius: 10, minHeight: 60, fontSize: 14 }}>
-              {transcription || 'Нажмите "Транскрипция"'}
+          <div className="text-block">
+            <h5 style={{ color: '#888', marginBottom: 5 }}>Текст поста / Транскрипция</h5>
+            <div style={{ background: 'rgba(0,0,0,0.3)', padding: 12, borderRadius: 10, minHeight: 60, fontSize: 14, whiteSpace: 'pre-wrap' }}>
+              {transcription || video.description || 'Нет текста'}
             </div>
           </div>
 
-          <div style={{ marginTop: 10 }}>
-            <h5 style={{ color: '#888' }}>Новый сценарий</h5>
+          <div className="text-block">
+            <h5 style={{ color: '#888', marginBottom: 5 }}>Новый сценарий</h5>
             <div style={{ background: 'rgba(0,0,0,0.3)', padding: 12, borderRadius: 10, minHeight: 100, fontSize: 14, color: '#00e676' }}>
               {script || 'Нажмите "Сгенерировать сценарий"'}
             </div>
