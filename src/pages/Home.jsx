@@ -1,59 +1,57 @@
-// src/pages/Home.jsx
 import React, { useState } from 'react';
-// Импортируй свои карточки видео, если они у тебя в отдельном компоненте
+import { Link } from 'react-router-dom'; // Добавили импорт
 
 export default function Home({ videos, isLoading }) {
-  const [activeTab, setActiveTab] = useState('fastGrowing');
+  const [activeTab, setActiveTab] = useState('topPopular');
 
   if (isLoading) {
-    return <div style={{ padding: 20 }}>Сканируем Instagram... Загрузка данных ⏳</div>;
+    return <div style={{ padding: 20, color: '#fff' }}>Сканируем Instagram... Загрузка данных ⏳</div>;
   }
 
-  // Берем массив видео в зависимости от выбранной вкладки
   const currentVideos = videos[activeTab] || [];
 
   return (
-    <div className="page home-page">
-      
-      {/* Навигация по сортировке (как на твоем макете) */}
+    <div className="page home-page" style={{ padding: '20px', color: '#fff' }}>
       <div style={{ display: 'flex', gap: '20px', marginBottom: '20px', borderBottom: '1px solid #333', paddingBottom: '10px' }}>
-        <div 
-          onClick={() => setActiveTab('topPopular')}
-          style={{ cursor: 'pointer', fontWeight: activeTab === 'topPopular' ? 'bold' : 'normal', color: activeTab === 'topPopular' ? '#ff6b00' : '#888' }}
-        >
+        <div onClick={() => setActiveTab('topPopular')} style={{ cursor: 'pointer', fontWeight: activeTab === 'topPopular' ? 'bold' : 'normal', color: activeTab === 'topPopular' ? '#ff6b00' : '#888' }}>
           Популярные ролики
         </div>
-        <div 
-          onClick={() => setActiveTab('fastGrowing')}
-          style={{ cursor: 'pointer', fontWeight: activeTab === 'fastGrowing' ? 'bold' : 'normal', color: activeTab === 'fastGrowing' ? '#ff6b00' : '#888' }}
-        >
+        <div onClick={() => setActiveTab('fastGrowing')} style={{ cursor: 'pointer', fontWeight: activeTab === 'fastGrowing' ? 'bold' : 'normal', color: activeTab === 'fastGrowing' ? '#ff6b00' : '#888' }}>
           Быстрорастущие (Высокий ER)
         </div>
-        <div 
-          onClick={() => setActiveTab('latest')}
-          style={{ cursor: 'pointer', fontWeight: activeTab === 'latest' ? 'bold' : 'normal', color: activeTab === 'latest' ? '#ff6b00' : '#888' }}
-        >
+        <div onClick={() => setActiveTab('latest')} style={{ cursor: 'pointer', fontWeight: activeTab === 'latest' ? 'bold' : 'normal', color: activeTab === 'latest' ? '#ff6b00' : '#888' }}>
           Последние
         </div>
       </div>
 
-      {/* Отрисовка твоих карточек */}
-      <div className="grid">
+      <div className="grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px' }}>
         {currentVideos.length > 0 ? (
           currentVideos.map(video => (
-            // Здесь вставь верстку своей карточки, которую ты скидывал на скриншоте.
-            // Подставляй туда video.thumbnail, video.shortCaption, video.views и video.engagement
-            <div key={video.id} className="video-card" style={{ background: '#222', borderRadius: '8px', padding: '10px' }}>
-              <img src={video.thumbnail} alt="cover" style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '4px' }}/>
-              <p style={{ margin: '10px 0', fontSize: '14px' }}>{video.shortCaption}</p>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#888', fontSize: '12px' }}>
-                <span>{video.views} views</span>
-                <span style={{ color: '#00e676' }}>⚡ {video.engagement}% ER</span>
+            // ОБЕРНУЛИ КАРТОЧКУ В LINK
+            <Link to={`/video/${video.shortcode}`} key={video.id} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <div className="video-card" style={{ background: '#1a1a1a', borderRadius: '12px', overflow: 'hidden', border: '1px solid #333', transition: 'transform 0.2s' }}>
+                <div style={{ position: 'relative', width: '100%', paddingTop: '125%', background: '#222' }}>
+                  <img 
+                    src={`https://images.weserv.nl/?url=${encodeURIComponent(video.thumbnailUrl)}`} 
+                    alt="cover" 
+                    referrerPolicy="no-referrer"
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                </div>
+                <div style={{ padding: '12px' }}>
+                  <p style={{ margin: '0 0 10px 0', fontSize: '13px', color: '#eee', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', height: '38px' }}>
+                    {video.description || "Без названия"}
+                  </p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
+                    <span style={{ color: '#aaa' }}>{video.views.toLocaleString()} views</span>
+                    <span style={{ color: '#00e676', fontWeight: '600' }}>⚡ {video.er}% ER</span>
+                  </div>
+                </div>
               </div>
-            </div>
+            </Link>
           ))
         ) : (
-          <div>По вашему запросу ничего не найдено.</div>
+          <div style={{ color: '#888' }}>Ничего не найдено.</div>
         )}
       </div>
     </div>
