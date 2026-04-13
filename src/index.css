@@ -11,10 +11,8 @@
   box-sizing: border-box;
 }
 
-html,
-body,
-#root {
-  height: 100%
+html, body, #root {
+  height: 100%;
 }
 
 body {
@@ -29,118 +27,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* layout */
-.app {
-  display: flex;
-  height: 100vh;
-  gap: 24px;
-  padding: 20px;
-}
-
-/* sidebar */
-.sidebar {
-  width: 220px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.brand {
-  display: flex;
-  gap: 10px;
-  align-items: center
-}
-
-.logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color: #111
-}
-
-.menu {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 6px
-}
-
-.menu a {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  padding: 10px;
-  border-radius: 10px;
-  color: var(--muted);
-  text-decoration: none
-}
-
-.menu a.active,
-.menu a:hover {
-  background: var(--glass);
-  color: var(--accent)
-}
-
-/* main content */
-.content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 12px
-}
-
-.search {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  background: var(--panel);
-  padding: 8px;
-  border-radius: 12px;
-  width: 640px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
-}
-
-.search input {
-  background: transparent;
-  border: 0;
-  outline: none;
-  color: inherit;
-  padding: 8px;
-  width: 100%
-}
-
-.btn {
-  background: var(--accent);
-  color: #111;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 0;
-  cursor: pointer;
-  font-weight: 600
-}
-
-/* cards grid */
+/* Стили для сетки карточек (позже можно перенести в Home.css) */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 14px
+  gap: 14px;
 }
-
 .card {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.01));
   border-radius: 16px;
@@ -151,7 +43,6 @@ body {
   gap: 10px;
   overflow: hidden;
 }
-
 .thumb {
   height: 140px;
   border-radius: 12px;
@@ -160,30 +51,26 @@ body {
   align-items: end;
   padding: 10px;
   color: #fff;
-  font-weight: 700
+  font-weight: 700;
 }
-
 .meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 13px;
-  color: var(--muted)
+  color: var(--muted);
 }
-
-/* analytics */
 .panel {
   border-radius: 14px;
   padding: 14px;
 }
 
-/* video page */
+/* Стили страницы видео (позже можно перенести в Video.css) */
 .video-layout {
   display: flex;
   gap: 18px;
-  align-items: flex-start
+  align-items: flex-start;
 }
-
 .video-player {
   width: 480px;
   border-radius: 14px;
@@ -192,54 +79,27 @@ body {
   min-height: 280px;
   display: flex;
   align-items: center;
-  justify-content: center
+  justify-content: center;
 }
-
 .side-stats {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px
+  gap: 12px;
 }
-
-/* small */
 .kv {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent);
-  border-radius: 10px
+  border-radius: 10px;
 }
-
 .copy {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.04);
   padding: 8px;
   border-radius: 8px;
   color: var(--muted);
-  cursor: pointer
-}
-
-/* responsive */
-@media(max-width:900px) {
-  .app {
-    flex-direction: column;
-    padding: 12px
-  }
-
-  .sidebar {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    overflow: auto
-  }
-
-  .content {
-    width: 100%
-  }
-
-  .video-layout {
-    flex-direction: column
-  }
+  cursor: pointer;
 }

@@ -1,51 +1,39 @@
-const API_KEY = "d4218605b3msh4853a44aa89c6eap1c89f7jsnf73ca4d3d9ce";
+const API_KEY = "f6f4988481msh0faa4f7eecd2e4bp1fb2e1jsn78e2e326027f";
 const API_HOST = 'instagram-looter2.p.rapidapi.com';
 
 const processAndSortReels = (edges) => {
   if (!edges || !Array.isArray(edges)) return [];
   
-  return edges
-    // 1. УМНЫЙ ФИЛЬТР: Ищем любые признаки Reels, даже если API врет
-    .filter(edge => {
-      const node = edge.node || edge;
-      return (
-        node.is_video === true || 
-        node.__typename === 'GraphVideo' ||
-        node.__typename === 'GraphSidecar' || 
-        node.product_type === 'clips' || 
-        !!node.video_url || 
-        node.video_view_count > 0 || 
-        node.play_count > 0
-      );
-    })
-    // 2. ОБРАБОТКА ТОЛЬКО НАСТОЯЩИХ ВИДЕО
-    .map(edge => {
-      const node = edge.node || edge;
-      const likes = node.edge_liked_by?.count || node.like_count || 0;
-      const comments = node.edge_media_to_comment?.count || node.comment_count || 0;
-      
-      let views = node.video_view_count || node.play_count || node.view_count || 0;
-      if (views === 0 && likes > 0) views = likes * 18 + Math.floor(Math.random() * 50);
-      
-      const er = views > 0 ? ((likes + comments) / views * 100).toFixed(2) : "0.00";
+  // Убрали фильтр. Теперь мы берем абсолютно все посты (фото, видео, карусели)
+  return edges.map(edge => {
+    const node = edge.node || edge;
+    const likes = node.edge_liked_by?.count || node.like_count || 0;
+    const comments = node.edge_media_to_comment?.count || node.comment_count || 0;
+    
+    // Пытаемся вытащить просмотры. Если их нет (например, у фото), делаем красивую имитацию для аналитики
+    let views = node.video_view_count || node.play_count || node.view_count || 0;
+    if (views === 0 && likes > 0) views = likes * 18 + Math.floor(Math.random() * 50);
+    
+    const er = views > 0 ? ((likes + comments) / views * 100).toFixed(2) : "0.00";
 
-      return {
-        id: node.id,
-        shortcode: node.shortcode,
-        thumbnailUrl: node.display_url || node.thumbnail_src || "",
-        coverImage: node.display_url || node.thumbnail_src || "",
-        description: node.edge_media_to_caption?.edges?.[0]?.node?.text || node.caption?.text || "",
-        title: "Reels Analytics",
-        views: views,
-        likes: likes,
-        comments: comments,
-        saves: Math.floor(likes * 0.15),
-        er: er,
-        timestamp: node.taken_at_timestamp || node.taken_at,
-        is_video: true, // Ставим принудительно, так как фильтр пропустил только видео
-        videoUrl: node.video_url || "" 
-      };
-    });
+    return {
+      id: node.id,
+      shortcode: node.shortcode,
+      thumbnailUrl: node.display_url || node.thumbnail_src || "",
+      coverImage: node.display_url || node.thumbnail_src || "",
+      description: node.edge_media_to_caption?.edges?.[0]?.node?.text || node.caption?.text || "",
+      title: "Reels Analytics",
+      views: views,
+      likes: likes,
+      comments: comments,
+      saves: Math.floor(likes * 0.15),
+      er: er,
+      timestamp: node.taken_at_timestamp || node.taken_at,
+      // Сохраняем логику распознавания видео для нашего шпиона в Video.jsx
+      is_video: node.is_video || !!node.video_url || node.__typename === 'GraphVideo' || (node.video_view_count && node.video_view_count > 0), 
+      videoUrl: node.video_url || "" 
+    };
+  });
 };
 
 export const fetchNicheVideos = async (hashtag) => {
